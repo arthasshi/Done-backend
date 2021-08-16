@@ -1,0 +1,77 @@
+basePath: /
+host: petstore.swagger.io
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Example API
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: this api will return user list by page
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: the req size,if null ,will get all users
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: get user list
+  /:id/file:
+    post:
+      description: upload file
+      parameters:
+      - description: the file data
+        in: body
+        name: photo
+        required: true
+        schema:
+          type: string
+      - description: the user id
+        in: path
+        name: uid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: upload file
+  /regist/:
+    post:
+      description: user regist
+      parameters:
+      - description: reg user data
+        in: body
+        name: user
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: regist
+swagger: "2.0"
