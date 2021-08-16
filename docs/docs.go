@@ -142,7 +142,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
 	Host:        "petstore.swagger.io",
-	BasePath:    "/",
+	BasePath:    "/v1",
 	Schemes:     []string{},
 	Title:       "Swagger Example API",
 	Description: "This is a sample server Petstore server.",

@@ -44,12 +44,12 @@ func main() {
 	initRouter()
 	url := ginSwagger.URL("http://localhost:8777/swagger/doc.json") // The url pointing to API definition
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
-	router.Run(":8777")
-	// }
+	router.Run()
+	select {}
 }
 func initRouter() {
 	router.MaxMultipartMemory = 8 << 20 //8 MiB
-	router.StaticFS("/static", http.Dir("./static"))
-	userGroup := router.Group("/user")
+	router.StaticFS("/v1/static", http.Dir("./static"))
+	userGroup := router.Group("/v1/user")
 	c.AddUserRouter(userGroup)
 }
