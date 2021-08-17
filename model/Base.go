@@ -14,9 +14,7 @@ var (
 )
 
 func init() {
-	// dsn := "root:Vip_root123@tcp(45.76.54.104:3306)/vip?charset=utf8mb4&parseTime=True&loc=Local"
-	// dsn := "root:Vip_root123@tcp(185.251.249.143:3306)/vip?charset=utf8mb4&parseTime=True&loc=Local"
-	dsn := "root:Vip_root123@tcp(0.0.0.0:3306)/vip?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:Vip_root123@tcp(185.251.249.143:3306)/vip?charset=utf8mb4&parseTime=True&loc=Local"
 	var err error
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
