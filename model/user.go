@@ -11,6 +11,8 @@ type User struct {
 	Phone    string `json:"phone"`
 	Address  string `json:"address"`
 	Birth    string `json:"birth"`
+	Status   int    `json:"status"`
+	Role     string `json:"role"` //
 }
 
 func RegistUser(u *User) (uint, error) {
