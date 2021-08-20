@@ -1,5 +1,4 @@
 basePath: /v1
-host: petstore.swagger.io
 info:
   contact:
     email: support@swagger.io
@@ -13,26 +12,6 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /:
-    get:
-      description: this api will return user list by page
-      parameters:
-      - description: page
-        in: query
-        name: page
-        type: integer
-      - description: the req size,if null ,will get all users
-        in: query
-        name: size
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            type: string
-      summary: get user list
   /:id/file:
     post:
       description: upload file
@@ -56,9 +35,168 @@ paths:
           schema:
             type: string
       summary: upload file
-  /regist/:
+  /shop/:
+    get:
+      description: 获取店铺列表，店铺页面，创建管理员，创建会员都会用到，可分页，
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: size，如果不传，默认获取所有
+        in: query
+        name: size
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 获取店铺列表
     post:
-      description: user regist
+      description: 新增店铺，必须包含name,address 字段
+      parameters:
+      - description: 店铺信息
+        in: body
+        name: shop
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 新增店铺
+  /shop/:id:
+    put:
+      description: 改变店铺的状态，0关闭，1开张
+      parameters:
+      - description: 店铺的id
+        in: query
+        name: id
+        type: integer
+      - description: 要改变的状态值
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: PUT改变店铺的状态
+  /shop/:id/scale:
+    put:
+      description: PUT改变店铺的积分比例，如果是管理员则传递店铺id的值为0，直接修改所有店铺的积分比例，
+      parameters:
+      - description: 店铺的id，管理员账户传0，慎用
+        in: query
+        name: id
+        type: integer
+      - description: 要改变的比例值，浮点
+        in: query
+        name: scale
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: PUT改变店铺的积分比例，如果是管理员则直接修改所有店铺的积分比例
+  /user/:
+    get:
+      description: 获取用户列表，分页，可以根据角色进行区分
+      parameters:
+      - description: page
+        in: query
+        name: page
+        type: integer
+      - description: the req size,if null ,will get all users
+        in: query
+        name: size
+        type: integer
+      - description: '角色 admin：0，门店管理员：1，会员2:'
+        in: query
+        name: role
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: GET获取用户列表
+  /user/:id:
+    put:
+      description: 改变会员/管理员的状态，冻结什么的操作都是这个，调用成功后会将此用户返回，用于更新
+      parameters:
+      - description: 用户的ID
+        in: query
+        name: id
+        type: integer
+      - description: 要改变的值
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: PUT改变会员/管理员的状态，冻结什么的操作都是这个
+  /user/:id/inte:
+    put:
+      description: 改变会员的积分，传递过来的是钱，不是换算后的积分
+      parameters:
+      - description: 用户的ID
+        in: query
+        name: id
+        type: integer
+      - description: 消费金额
+        in: query
+        name: money
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: PUT改变会员的积分
+  /user/login:
+    post:
+      description: 登录必传的参数为用户名和密码，登录成功会返回用户的全部信息
+      parameters:
+      - description: reg user data
+        in: body
+        name: user
+        required: true
+        schema:
+          type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 登录
+  /user/regist/:
+    post:
+      description: 新增门店管理员，新增会员都是这个接口，post的参数记得带role，1门店管理员，2会员，其中shopid为门店分组
       parameters:
       - description: reg user data
         in: body

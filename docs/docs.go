@@ -32,37 +32,6 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
-            "get": {
-                "description": "this api will return user list by page",
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "get user list",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "the req size,if null ,will get all users",
-                        "name": "size",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/:id/file": {
             "post": {
                 "description": "upload file",
@@ -98,9 +67,255 @@ var doc = `{
                 }
             }
         },
-        "/regist/": {
+        "/shop/": {
+            "get": {
+                "description": "获取店铺列表，店铺页面，创建管理员，创建会员都会用到，可分页，",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "获取店铺列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "size，如果不传，默认获取所有",
+                        "name": "size",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
-                "description": "user regist",
+                "description": "新增店铺，必须包含name,address 字段",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "新增店铺",
+                "parameters": [
+                    {
+                        "description": "店铺信息",
+                        "name": "shop",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/shop/:id": {
+            "put": {
+                "description": "改变店铺的状态，0关闭，1开张",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "PUT改变店铺的状态",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "店铺的id",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "要改变的状态值",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/shop/:id/scale": {
+            "put": {
+                "description": "PUT改变店铺的积分比例，如果是管理员则传递店铺id的值为0，直接修改所有店铺的积分比例，",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "PUT改变店铺的积分比例，如果是管理员则直接修改所有店铺的积分比例",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "店铺的id，管理员账户传0，慎用",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "要改变的比例值，浮点",
+                        "name": "scale",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/": {
+            "get": {
+                "description": "获取用户列表，分页，可以根据角色进行区分",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "GET获取用户列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "the req size,if null ,will get all users",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "角色 admin：0，门店管理员：1，会员2:",
+                        "name": "role",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/:id": {
+            "put": {
+                "description": "改变会员/管理员的状态，冻结什么的操作都是这个，调用成功后会将此用户返回，用于更新",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "PUT改变会员/管理员的状态，冻结什么的操作都是这个",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户的ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "要改变的值",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/:id/inte": {
+            "put": {
+                "description": "改变会员的积分，传递过来的是钱，不是换算后的积分",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "PUT改变会员的积分",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户的ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "消费金额",
+                        "name": "money",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/login": {
+            "post": {
+                "description": "登录必传的参数为用户名和密码，登录成功会返回用户的全部信息",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "登录",
+                "parameters": [
+                    {
+                        "description": "reg user data",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/regist/": {
+            "post": {
+                "description": "新增门店管理员，新增会员都是这个接口，post的参数记得带role，1门店管理员，2会员，其中shopid为门店分组",
                 "produces": [
                     "application/json"
                 ],
@@ -141,7 +356,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "petstore.swagger.io",
+	Host:        "",
 	BasePath:    "/v1",
 	Schemes:     []string{},
 	Title:       "Swagger Example API",

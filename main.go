@@ -26,14 +26,14 @@ var (
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host petstore.swagger.io
-// @BasePath /
+// @host
+// @BasePath /v1
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	initRouter()
 	url := ginSwagger.URL("http://localhost:8777/swagger/doc.json") // The url pointing to API definition
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
-	router.Run()
+	router.Run(":8777")
 	select {}
 }
 func initRouter() {
@@ -41,4 +41,6 @@ func initRouter() {
 	router.StaticFS("/v1/static", http.Dir("./static"))
 	userGroup := router.Group("/v1/user")
 	c.AddUserRouter(userGroup)
+	userGroupShop := router.Group("/v1/shop")
+	c.AddShopRouter(userGroupShop)
 }

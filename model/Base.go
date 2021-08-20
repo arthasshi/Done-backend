@@ -9,8 +9,8 @@ import (
 
 var (
 	db     *gorm.DB
-	CECODE int //client request error code
-	SECODE int // server error code
+	CECODE int = 6002 //client request error code
+	SECODE int = 5002 // server error code
 )
 
 func init() {
@@ -20,7 +20,7 @@ func init() {
 	if err != nil {
 		fmt.Println(err)
 	} else {
-		db.AutoMigrate(&User{})
+		db.AutoMigrate(&User{}, &Shop{})
 	}
 }
 
