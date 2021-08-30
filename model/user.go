@@ -16,10 +16,11 @@ type User struct {
 	Phone    string `json:"phone"`
 	Address  string `json:"address"`
 	Birth    string `json:"birth"`
-	Status   int    `json:"status"`   //会员状态
+	Status   int    `json:"status"`   //会员状态 0是正常，1是冻结/禁用
 	Role     int    `json:"role"`     //角色包含：admin:0，门店管理员:1，会员:2，也就是说这些角色共用一个表
 	Integral int    `json:"integral"` //会员积分
 	ShopId   uint   `json:"shop_id"`
+	ShopName string `json:"shop_name"`
 }
 
 func RegistUser(u *User) (uint, error) {
@@ -52,6 +53,15 @@ func UserList(page, size, role int) ([]*User, int64, error) {
 	var users []*User
 	var total int64
 	result := db.Table("users").Where("role = ?", role).Count(&total).Offset((page - 1) * size).Limit(size).Find(&users)
+	for i, _ := range users {
+		var shop Shop
+		res := db.First(&shop, users[i].ShopId)
+		if res.Error == nil {
+			users[i].ShopName = shop.Name
+		} else {
+			users[i].ShopName = ""
+		}
+	}
 	return users, total, result.Error
 }
 
