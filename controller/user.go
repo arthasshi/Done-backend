@@ -23,14 +23,20 @@ func AddUserRouter(rg *gin.RouterGroup) {
 }
 
 // @summary regist
-// @Description 新增门店管理员，新增会员都是这个接口，post的参数记得带role，1门店管理员，2会员，其中shopid为门店分组
+// @Description 新增门店管理员，新增会员都是这个接口，post的参数记得带role，1门店管理员，2会员，其中shopid为门店分组,门店管理员新增会员的时候，会员的shop_id默认为门店管理员的shop_id
 // @Produce  json
 // @Param user body string true "reg user data"
+// @Param shopmid query string false "门店管理员的id，只有新增会员需要传递这个"
 // @Resource obj
 // @Router /user/regist/ [post]
 // @Success 200 {object} string
 func handlerRegist(c *gin.Context) {
 	var user model.User
+	var smIdInt uint64
+	shopMaId := c.Query("shopmid")
+	if shopMaId != "" {
+		smIdInt, _ = strconv.ParseUint(shopMaId, 10, 0)
+	}
 	if err := c.Bind(&user); err != nil {
 		c.JSON(200, model.ResJsonType{
 			Code: model.CECODE,
@@ -38,7 +44,7 @@ func handlerRegist(c *gin.Context) {
 		})
 		return
 	}
-	id, err := model.RegistUser(&user)
+	id, err := model.RegistUser(&user, uint(smIdInt))
 	if err == nil {
 		c.JSON(200, model.ResJsonType{
 			Code: 200,
@@ -118,7 +124,7 @@ func handlerChangeUserStatus(c *gin.Context) {
 // @Param id query int false "用户的ID"
 // @Param money query int false "消费金额"
 // @Resource obj
-// @Router /user/:id/inte [put]
+// @Router /user/inte/:id [put]
 // @Success 200 {object} string
 func handlerChangeUserInte(c *gin.Context) {
 	id := c.Param("id")

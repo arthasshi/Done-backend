@@ -13,7 +13,7 @@ type User struct {
 	Username string `json:"username"`
 	Password string `json:"password,omitempty"`
 	Email    string `json:"email"`
-	Phone    string `json:"phone"`
+	Phone    string `json:"phone" gorm:"unique,not null"`
 	Address  string `json:"address"`
 	Birth    string `json:"birth"`
 	Status   int    `json:"status"`   //会员状态 0是正常，1是冻结/禁用
@@ -23,12 +23,23 @@ type User struct {
 	ShopName string `json:"shop_name"`
 }
 
-func RegistUser(u *User) (uint, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
-	if err != nil {
-		fmt.Println(err)
+func RegistUser(u *User, smId uint) (uint, error) {
+	fmt.Println(u.Password)
+	fmt.Println(smId)
+	if u.Password != "" {
+		hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+		if err != nil {
+			fmt.Println(err)
+		}
+		u.Password = string(hash)
 	}
-	u.Password = string(hash)
+
+	//如果存在店铺管理员id，证明当前调用接口是店铺管理员新增会员，需要查询店铺管理员所在的店铺
+	if smId != 0 {
+		var shopManager User
+		db.Find(&shopManager, smId)
+		u.ShopId = shopManager.ShopId
+	}
 	result := db.Create(u)
 	return u.ID, result.Error
 }
